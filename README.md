@@ -13,5 +13,5 @@ usage: atlantr.py [-i INPUT] [-o OUTPUT] [-t THREADS] [-uh UNKNOWNHOSTS]
 -l Logging, every proccesed line gets logged so if the programm stopps or crashes it can be continued from there. DEFAULT: False
 -lsize Logfilesize, define how big the logfile fore the linecount should be in MB. After X MB old values are deleted. DEFAULT: 5
 -gm Ghostmode, no userinput is needed to continue from old logged linecount. Handy if you use nohup. DEFAULT: False
--iu Disables logging of invalid and unmachted user:pass to get better performance. DEFAULT: False
+-iu Log invalid an unmatched accounts. Disable for better performance DEFAULT: True
 
