@@ -16,7 +16,6 @@ import gevent #pip install gevent
 from gevent.queue import *
 import gevent.monkey
 gevent.monkey.patch_all()
-socket.setdefaulttimeout(3)
 
 print """
        db              88                                           
@@ -140,6 +139,20 @@ def getunknown_imap(subb):
         except:
             pass
     return False
+    
+def ini_uh(host):
+	print "getting host"
+	jobs = [gevent.spawn(getunknown_imap,host)]
+	gevent.joinall(jobs, timeout=8)
+	for job in jobs:
+		v = job.value
+		if v != None:
+			with open("hoster.txt", "a") as myfile:
+				myfile.write('\n'+host+':'+v+":993")
+			ImapConfig[host] = v
+			print "adding"
+			return v
+	return False
 
 def sub_worker(task):
     global count_valid
@@ -152,7 +165,7 @@ def sub_worker(task):
     host = get_imapConfig(task2[0])
     if phosts:
         if host == False:
-            o = getunknown_imap(task2[0])
+            o = ini_uh(task2[0])
             if o != False:
                 host = o
     if host == False:
@@ -207,7 +220,7 @@ def loader():
                         a = line.split(':')[0].strip()
                         b = line.split(':')[1].strip()
                         line = b.lower()+':'+a
-                    q.put(line.strip(),timeout=3)
+                    q.put(line.strip(),timeout=15)
                 except:
                     pass
 
