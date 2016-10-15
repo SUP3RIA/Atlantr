@@ -1,7 +1,7 @@
 Atlantr Imap Checker. Fastes Email:Pass Checker on the planet.
 --------------------------------------------------------------
 
-    usage: atlantr.py [-i INPUT] [-o OUTPUT] [-t THREADS] [-uh UNKNOWNHOSTS] [-l LOGGING] [-lsize LOGFILESIZE] [-gm GHOSTMODE] [-iu INVUNMA]
+    usage: atlr.py [-i INPUT] [-o OUTPUT] [-t THREADS] [-uh UNKNOWNHOSTS] [-l LOGGING] [-lsize LOGFILESIZE] [-gm GHOSTMODE] [-iu INVUNMA]
 
  - `-i` *Inputfile, any textfile with the format
    user@domain.com:password in each line should work. DEFAULT:
