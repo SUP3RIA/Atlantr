@@ -1,6 +1,7 @@
 Atlantr Imap Checker. Fastes Email:Pass Checker on the planet.
 --------------------------------------------------------------
-[[https://github.com/SUP3RIA/Atlantr/blob/master/screen.gif|alt=octocat]]
+![Screencast](https://github.com/SUP3RIA/Atlantr/blob/master/screen.gif)
+
     usage: atlr.py [-i INPUT] [-o OUTPUT] [-t THREADS] [-uh UNKNOWNHOSTS] [-l LOGGING] [-lsize LOGFILESIZE] [-gm GHOSTMODE] [-iu INVUNMA]
 
  - `-i` *Inputfile, any textfile with the format
