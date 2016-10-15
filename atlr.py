@@ -9,21 +9,22 @@ import itertools
 import argparse
 import logging
 from logging.handlers import RotatingFileHandler
+import socket
 
 from tqdm import tqdm #pip install tqdm
 import gevent #pip install gevent
 from gevent.queue import *
 import gevent.monkey
 
+socket.setdefaulttimeout(3)
 gevent.monkey.patch_all()
-
 
 parser = argparse.ArgumentParser(description='Atlantr Imap Checker 1.1')
 parser.add_argument('-i','--input', help="Inputfile", required=False,type=str,default="mail_pass.txt")
 parser.add_argument('-o','--output', help='Outputfile', required=False,type=str,default="mail_pass_valid.txt")
 parser.add_argument('-t','--threads', help='Number of Greenlets spawned', required=False,type=int,default="512")
 parser.add_argument('-uh','--unknownhosts', help='Check for unknown hosts', required=False,type=bool,default=False)
-parser.add_argument('-l','--logging', help='Linecount logging', required=False,type=bool,default=True)
+parser.add_argument('-l','--logging', help='Linecount logging', required=False,type=bool,default=False)
 parser.add_argument('-lsize','--logfilesize', help='Size of logfile in MB', required=False,type=int,default="5")
 parser.add_argument('-gm','--ghostmode', help='Continues linecount without userinput', required=False,type=bool,default=False)
 parser.add_argument('-iu','--invunma', help='Log invalid an unmatched accounts.', required=False,type=bool,default=True)
@@ -118,6 +119,7 @@ def get_lineCount():
         return 0
 
 def getunknown_imap(subb):
+    print "Gttin"
     sub = ['imap','mail','pop','pop3','imap-mail','inbound','mx','imaps','smtp','m']
     for host in sub:
         host = host+'.'+subb
