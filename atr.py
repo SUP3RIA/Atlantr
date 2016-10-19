@@ -9,7 +9,6 @@ import itertools
 import argparse
 import logging
 from logging.handlers import RotatingFileHandler
-import socket
 
 from tqdm import tqdm  # pip install tqdm
 import gevent  # pip install gevent
