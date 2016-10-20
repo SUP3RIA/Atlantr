@@ -100,7 +100,7 @@ invunma = args['invunma']
 
 if workers > 1500:
     print "Threads are limited to 1500."
-    wokers = 1500
+    workers = 1500
 
 logger1 = logging.getLogger("valid Log")
 logger1.setLevel(logging.DEBUG)
