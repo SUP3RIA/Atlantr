@@ -9,7 +9,6 @@ import itertools
 import argparse
 import logging
 from logging.handlers import RotatingFileHandler
-import email
 
 from tqdm import tqdm  # pip install tqdm
 import gevent  # pip install gevent
@@ -362,12 +361,12 @@ def grabberwrap(task,host):
     for q in matchers:
         e = email_grabber(task[0],task[1],host,q)
         if e != False:
-            if 'payback' in q.split('|')[2]:
-                g = grabber_wrapper(e[0])
-                if g != False:
-                    task = task[0]+':'+task[1]+'|'+','.join(g)
-                    return task
             if len(e)>0:
+                if 'payback' in q.split('|')[2]:
+                    g = grabber_wrapper(e[0])
+                    if g != False:
+                        task = task[0]+':'+task[1]+'|'+','.join(g)
+                        return task
                 return ':'.join(task)+'|'+q.split('|')[2]+' True'
     return ':'.join(task)
                 
