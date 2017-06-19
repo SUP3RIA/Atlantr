@@ -6,7 +6,7 @@ from aioimaplib import aioimaplib #pip3 install aioimaplib
 import aiofiles #pip3 install aioimaplib
 #import uvloop #pip3 instal uvloop
 #asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-
+#uvloop does not work with aioimaplib
 
 q = asyncio.Queue()
 
