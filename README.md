@@ -8,6 +8,7 @@ Green threads (Gevent) are used to implement concurrent and asynchronous network
 ### system requirements:
 - Python 2.7.x
 - Gevent (pip install gevent)
+- tqdm (pip install tqdm)
 - 512MB RAM
 - Linux preferred
 #### Example usage:
