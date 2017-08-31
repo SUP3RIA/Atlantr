@@ -40,3 +40,10 @@ When no settings are found for a domain a hardcoded list of subdomains will be t
 imap , mail, pop, pop3, imap-mail, inbound, mx, imaps, smtp, m
 If there is a subdomain found it will be saved to hoster.dat.
 
+##### Formats:
+###### Mail:Pass:
+user@domain.com:password
+###### hoster.dat:
+domain.com:imap.domain.com:port
+###### matchers.dat:
+search|(FROM "domain.com")|discriptor
