@@ -12,6 +12,14 @@ Green threads (Gevent) are used to implement concurrent and asynchronous network
 python atr3.py -i input.txt -o output.txt -t 1000 -g true 
 #### Optional Arguments:
 When no optional arguments are provided default values are used.
+
+
+| Tables        | Are           | Cool  |
+| ------------- |:-------------:| -----:|
+| col 3 is      | right-aligned | $1600 |
+| col 2 is      | centered      |   $12 |
+| zebra stripes | are neat      |    $1 |
+
 | Short| Long | Description | Default value |
  ----------------- | :----------------------------: | :------------------: | ------:|
 |-i |--input|name of input text file|mail_pass.txt |
