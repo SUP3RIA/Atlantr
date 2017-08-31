@@ -40,6 +40,18 @@ When no settings are found for a domain a hardcoded list of subdomains will be t
 imap , mail, pop, pop3, imap-mail, inbound, mx, imaps, smtp, m
 If there is a subdomain found it will be saved to hoster.dat.
 
+#### Use with TOR or SOCKS5
+###### Linux (Debian, Ubuntu):
+sudo apt-get update
+sudo apt-get install tor
+sudo apt-get install proxychains
+sudo nano /etc/tor/torrc
+Add this line: MaxCircuitDirtiness 10
+tor
+proxychains curl https://api.ipify.org/tformat=text
+sudo proxychains python atr3.py 
+
+
 ##### Formats:
 ###### Mail:Pass:
 user@domain.com:password
