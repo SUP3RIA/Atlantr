@@ -1,7 +1,7 @@
 # Atlantr Imap Checker. 
 ##### Fastes Email:Pass Checker on the planet.
 
-![Screencast](https://github.com/SUP3RIA/Atlantr/blob/master/screen.png)
+![Screencast](https://raw.githubusercontent.com/SUP3RIA/Atlantr/master/screen.png)
 
 Atlantr is a tool to validate login credentials of email accounts via the IMAP protocol. 
 Green threads (Gevent) are used to implement concurrent and asynchronous networking.
@@ -36,20 +36,30 @@ The validation of the credentials is implemented using the IMAP standard library
 ###### Email Grabber
 When the login was successful and the -g switch is true, IMAP queries obtained from matchers.dat are executed and returned emails are saved in the folder "grabbed".
 Each credentials gets its own textfile which will be appended to even after restarting. When -s switch is true, the "grabbed" folder will be compressed to a .zip file (but not deleted!) just before Atlantr terminates.
+
+There is no parsing of emails for information supported.
+Please use a external programm for that!
 ###### Hosts Without Settings
-When no settings are found for a domain a hardcoded list of subdomains will be tried to connect: 
-imap , mail, pop, pop3, imap-mail, inbound, mx, imaps, smtp, m
+When no settings are found for a domain a hardcoded list of subdomains will be tried to connect to 
+imap , mail, pop, pop3, imap-mail, inbound, mx, imaps, smtp, and m.
 If there is a subdomain found it will be saved to hoster.dat.
 
 #### Use with TOR or SOCKS5
 ###### Linux (Debian, Ubuntu):
 sudo apt-get update
+
 sudo apt-get install tor
+
 sudo apt-get install proxychains
+
 sudo nano /etc/tor/torrc
+
 Add this line: MaxCircuitDirtiness 10
+
 tor
+
 proxychains curl https://api.ipify.org/tformat=text
+
 sudo proxychains python atr3.py 
 
 
