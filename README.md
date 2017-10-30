@@ -34,14 +34,12 @@ When no optional arguments are provided default values are used.
 ###### IMAP Login
 The validation of the credentials is implemented using the IMAP standard library of Python via a SSL connection. The protocoll is not explicitly specified to work concurrently but it seems to work reliable with Gevent. Settings for domains are obtained from hosts.dat.
 ###### Email Grabber
-When the login was successful and the -g switch is true, IMAP queries obtained from matchers.dat are executed and returned emails are saved in the folder "grabbed".
-Each credentials gets its own textfile which will be appended to even after restarting. When -s switch is true, the "grabbed" folder will be compressed to a .zip file (but not deleted!) just before Atlantr terminates.
+If the login is successful as is the -g switch is true, IMAP queries obtained from matchers.dat are executed and returned emails are saved in the folder "grabbed". Each credential gets its own textfile which will be appended, even after its restart. In case -s switch is true, the "grabbed" folder will be compressed to a .zip file (however, it will not be deleted) prior to Atlantr termination.
 
 There is no parsing of emails for information supported.
-Please use a external programm for that!
+Please use an external programm for that!
 ###### Hosts Without Settings
-When no settings are found for a domain a hardcoded list of subdomains will be tried to connect to 
-imap , mail, pop, pop3, imap-mail, inbound, mx, imaps, smtp, and m.
+If no settings are found for a domain, a hardcoded list of subdomains will be tried to connect to imap , mail, pop, pop3, imap-mail, inbound, mx, imaps, smtp, and m. However, if there is a subdomain found, it will be saved to hoster.dat.
 If there is a subdomain found it will be saved to hoster.dat.
 
 #### Use with TOR or SOCKS5
