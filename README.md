@@ -14,7 +14,7 @@ Green threads (Gevent) are used to implement concurrent and asynchronous network
 #### Example usage:
 python atr3.py -i input.txt -o output.txt -t 1000 -g true 
 #### Optional Arguments:
-When no optional arguments are provided default values are used.
+If no optional arguments are provided the default values are used.
 
 
 | Short| Long | Description | Default value |
