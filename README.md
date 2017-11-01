@@ -23,13 +23,13 @@ If no optional arguments are provided the default values are used.
 |-o|--output|name of output text file| mail_pass_valid.txt|
 |-t|--threads|number of "threads" used|100 |
 |-iu|--invunma|log invalid and unmatched accounts|true |
-|-g|--grabber|get emails according to the provided queries|false |
+|-g|--grabber|get emails according to the provided imap queries|false |
 |-mf|--matchfile|define textfile with imap queries for grabber| matchers.dat|
-|-to|--timeout|define timeout for all sockets in sec.| 5|
+|-to|--timeout|define timeout for all sockets in seconds| 5|
 |-r|--resume|resume from line defined in "last_line.log"|false |
-|-b|--big|don't initialize progressbar with linecount| false|
-|-uh|--unknownhosts|Check hardcoded list for hosts without settings|true |
-|-s|--snap|Compress "grabbed" folder at the end as .zip| true|
+|-b|--big|initialize progressbar without starting linecount| false|
+|-uh|--unknownhosts|check hardcoded list of subdomains for hosts without settings|true |
+|-s|--snap|compress "grabbed" folder at the end as .zip| true|
 ### Functions explained in detail
 ###### IMAP Login
 The validation of the credentials is implemented using the IMAP standard library of Python via a SSL connection. The protocoll is not explicitly specified to work concurrently but it seems to work reliable with Gevent. Settings for domains are obtained from hosts.dat.
