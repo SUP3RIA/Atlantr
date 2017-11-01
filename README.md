@@ -12,7 +12,9 @@ Green threads (Gevent) are used to implement concurrent and asynchronous network
 - 512MB RAM
 - Linux preferred
 #### Example usage:
-```python atr3.py -i input.txt -o output.txt -t 1000 -g true ```
+```
+python atr3.py -i input.txt -o output.txt -t 1000 -g true 
+```
 #### Optional Arguments:
 If no optional arguments are provided the default values are used.
 | Short| Long | Description | Default value |
@@ -80,8 +82,8 @@ sudo proxychains python atr3.py
 Note that Proxychains can be configured to work with Socks5 and other types of proxies. There are good Tutorials to find via Google.
 
 
-#### Formats used :
->Mail:Pass:
+#### Formats and conventions
+Mail:Pass:
 user@domain.com:password
 hoster.dat:
 domain.com:imap.domain.com:port
