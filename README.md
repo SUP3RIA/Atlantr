@@ -39,8 +39,11 @@ If the login is successful as is the -g switch is true, IMAP queries obtained fr
 There is no parsing of emails for information supported.
 Please use an external programm for that!
 ###### Hosts Without Settings
-If no settings are found for a domain, a hardcoded list of subdomains will be tried to connect to imap , mail, pop, pop3, imap-mail, inbound, mx, imaps, smtp, and m. However, if there is a subdomain found, it will be saved to hoster.dat.
-If there is a subdomain found it will be saved to hoster.dat.
+If no settings are found for a domain, a hardcoded list of subdomains will be used to find a valid imap server.
+
+|mail, pop, pop3, imap-mail, inbound, mx, imaps, smtp, me|
+
+If there is a valid subdomain found of a domain to establish a connection to a imap server, it will be saved to hoster.dat.
 
 #### Use with TOR or SOCKS5
 ###### Linux (Debian, Ubuntu):
