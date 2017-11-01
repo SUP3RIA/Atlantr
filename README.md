@@ -41,7 +41,7 @@ Please use an external programm for that!
 ###### Hosts Without Settings
 If no settings are found for a domain, a hardcoded list of subdomains will be used to find a valid imap server.
 
-|mail, pop, pop3, imap-mail, inbound, mx, imaps, smtp, me|
+mail, pop, pop3, imap-mail, inbound, mx, imaps, smtp, me
 
 If there is a valid subdomain found of a domain to establish a connection to a imap server, it will be saved to hoster.dat.
 
