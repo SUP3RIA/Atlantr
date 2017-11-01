@@ -12,11 +12,9 @@ Green threads (Gevent) are used to implement concurrent and asynchronous network
 - 512MB RAM
 - Linux preferred
 #### Example usage:
-python atr3.py -i input.txt -o output.txt -t 1000 -g true 
+```python atr3.py -i input.txt -o output.txt -t 1000 -g true ```
 #### Optional Arguments:
 If no optional arguments are provided the default values are used.
-
-
 | Short| Long | Description | Default value |
  ----------------- | :----------------------------: | :------------------: | ------:|
 |-i |--input|name of input text file|mail_pass.txt |
@@ -41,33 +39,51 @@ Please use an external programm for that!
 ###### Hosts Without Settings
 If no settings are found for a domain, a hardcoded list of subdomains will be used to find a valid imap server.
 
-mail, pop, pop3, imap-mail, inbound, mx, imaps, smtp, me
+> mail, pop, pop3, imap-mail, inbound, mx, imaps, smtp, me
 
-If there is a valid subdomain found of a domain to establish a connection to a imap server, it will be saved to hoster.dat.
+If there is a valid subdomain found of a domain to establish a connection to an imap server, it will be saved to hoster.dat.
+### Usage with TOR or Proxies
+There is no internal functionality for any kind of proxy implemented but it works well with external proxifier programs like "proxychains".
 
-#### Use with TOR or SOCKS5
-###### Linux (Debian, Ubuntu):
+##### Tutorial for Linux (Debian, Ubuntu):
+##
+Update and and then install Tor and Proxychains:
+```
 sudo apt-get update
-
 sudo apt-get install tor
-
 sudo apt-get install proxychains
-
-sudo nano /etc/tor/torrc
-
-Add this line: MaxCircuitDirtiness 10
-
+```
+Edit the torrc file to get new ip after 10 seconds:
+``` 
+sudo nano /etc/tor/torrc 
+```
+Add this line an save to disk:
+```
+MaxCircuitDirtiness 10
+```
+Start Tor:
+```
 tor
-
+```
+Check if Proxychains is working:
+```
 proxychains curl https://api.ipify.org/tformat=text
-
+```
+The return ip should be different when proxychains is used!
+```
+curl https://api.ipify.org/tformat=text
+```
+Start Atlantr checker like this:
+```
 sudo proxychains python atr3.py 
+```
+Note that Proxychains can be configured to work with Socks5 and other types of proxies. There are good Tutorials to find via Google.
 
 
-##### Formats:
-###### Mail:Pass:
+#### Formats used :
+>Mail:Pass:
 user@domain.com:password
-###### hoster.dat:
+hoster.dat:
 domain.com:imap.domain.com:port
-###### matchers.dat:
+matchers.dat:
 search|(FROM "domain.com")|discriptor
