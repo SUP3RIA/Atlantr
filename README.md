@@ -30,6 +30,8 @@ If no optional arguments are provided the default values are used.
 |-b|--big|initialize progressbar without starting linecount| false|
 |-uh|--unknownhosts|check hardcoded list of subdomains for hosts without settings|true |
 |-s|--snap|compress "grabbed" folder at the end as .zip| true|
+
+##
 ### Functions explained in detail
 ###### IMAP Login
 The validation of the credentials is implemented using the IMAP standard library of Python via a SSL connection. The protocoll is not explicitly specified to work concurrently but it seems to work reliable with Gevent. Settings for domains are obtained from hosts.dat.
@@ -44,11 +46,11 @@ If no settings are found for a domain, a hardcoded list of subdomains will be us
 > mail, pop, pop3, imap-mail, inbound, mx, imaps, smtp, me
 
 If there is a valid subdomain found of a domain to establish a connection to an imap server, it will be saved to hoster.dat.
+##
 ### Usage with TOR or Proxies
 There is no internal functionality for any kind of proxy implemented but it works well with external proxifier programs like "proxychains".
 
 ##### Tutorial for Linux (Debian, Ubuntu):
-##
 Update and and then install Tor and Proxychains:
 ```
 sudo apt-get update
@@ -80,7 +82,7 @@ Start Atlantr checker like this:
 sudo proxychains python atr3.py 
 ```
 Note that Proxychains can be configured to work with Socks5 and other types of proxies. There are good Tutorials to find via Google.
-
+##
 
 #### Formats and conventions
 Mail:Pass:
