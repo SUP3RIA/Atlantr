@@ -62,7 +62,7 @@ Edit the torrc file to get new ip after 10 seconds:
 ``` 
 sudo nano /etc/tor/torrc 
 ```
-Add this line an save to disk:
+Add this line and save to disk:
 ```
 MaxCircuitDirtiness 10
 ```
@@ -74,11 +74,11 @@ Check if Proxychains is working:
 ```
 proxychains curl https://api.ipify.org/tformat=text
 ```
-The return ip should be different when proxychains is used!
+The returned ip should be different when proxychains is used!
 ```
 curl https://api.ipify.org/tformat=text
 ```
-Start Atlantr checker like this:
+Start Atlantr like this:
 ```
 sudo proxychains python atr3.py 
 ```
