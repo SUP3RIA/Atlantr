@@ -17,8 +17,9 @@ python atr3.py -i input.txt -o output.txt -t 1000 -g true
 ```
 #### Optional Arguments:
 If no optional arguments are provided the default values are used.
+
 | Short| Long | Description | Default value |
-| ----------------- | :----------------------------: | :------------------: | ------:|
+| ----------------- | ---------------------------- | ------------------ | ------|
 |-i |--input|name of input text file|mail_pass.txt |
 |-o|--output|name of output text file| mail_pass_valid.txt|
 |-t|--threads|number of "threads" used|100 |
