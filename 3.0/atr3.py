@@ -38,7 +38,7 @@ def sub_worker(t):
     host = get_imapConfig(task[0])
     if host == False:
         if scan_unknow_host == True:
-            host[0] = ini_uh(task[0])
+            host = ini_uh(task[0])
         if host == False:
             if invunma == True:
                 q_unmatched.put(t[0])#send unmatched to q
@@ -277,9 +277,17 @@ def loader():
         with open(file_in, "r") as text_file:
             pid = par1
             for line in itertools.islice(text_file, par1, None):
-                if len(line.strip()) > 1 and ':' in line.strip():
-                    q.put((line.strip(), pid))
-                    pid = pid + 1
+                l = line.strip()
+                if len(l) > 2:
+                    ll = l.split(':')
+                    if len(ll) < 3 and len(ll)>1:
+                        if len(ll[0])>0 and len(ll[1])>0:
+                            la = ll[0].split('@')
+                            if len(la) < 3 and len(la)>1 :
+                                if len(la[1].split('.')) == 2:
+                                    q.put((l, pid))
+                                    pid = pid + 1
+
     except IOError:
         print "[ERROR]No input file", file_in, "found!"
     except:
@@ -490,7 +498,7 @@ parser.add_argument(
     help='Number of Greenlets spawned',
     required=False,
     type=int,
-    default="100")
+    default="1000")
 parser.add_argument(
     '-iu',
     '--invunma',
