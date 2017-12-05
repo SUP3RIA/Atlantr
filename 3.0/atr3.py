@@ -617,18 +617,22 @@ grabb_all = args["grabball"]
 snap_shot = args["snap"]
 
 # monkey patching libs which a supported by gevent
+
 gevent.monkey.patch_all()
 
 # registering an event and signal handler
+
 evt = Event()
 signal.signal(signal.SIGINT, handler)
 
 # init ressources
+
 init_ImapConfig()
 if grabactiv:
     init_matchers()
 
 # init of queues
+
 q = gevent.queue.Queue(maxsize=250000)  # loader
 q_valid = gevent.queue.Queue()  # valid
 q_status = gevent.queue.Queue()  # status
@@ -637,5 +641,10 @@ if invunma:
     q_unmatched = gevent.queue.Queue()  # unmatched
 if grabactiv:
     q_grabbed = gevent.queue.Queue()  # grabbed
+    
 # starting main logic
-asynchronous()
+
+try:
+	asynchronous()
+except:
+	pass #TODO: DIRTY! But it works to supress shutdown panic.
