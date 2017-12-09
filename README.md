@@ -41,6 +41,9 @@ If the login is successful as is the -g switch is true, IMAP queries obtained fr
 
 There is no parsing of emails for information supported.
 Please use an external programm for that!
+###### Pause/Resume Feature
+It is possible to pause and resume at the next start of the script. Just press Ctrl+C and the program will shut down gracefully and write the last line processed into lastline.log. Resume at the next start with the -r true switch.
+
 ###### Hosts Without Settings
 If no settings are found for a domain, a hardcoded list of subdomains will be used to find a valid imap server.
 
