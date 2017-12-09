@@ -1,7 +1,7 @@
 # Atlantr Imap Checker. 
 ##### Fastes Email:Pass Checker on the planet.
 
-![Screencast](https://raw.githubusercontent.com/SUP3RIA/Atlantr/master/screen.png)
+![Screencast](https://raw.githubusercontent.com/SUP3RIA/Atlantr/master/screen.gif)
 
 Atlantr is a tool to validate login credentials of email accounts via the IMAP protocol. 
 Green threads (Gevent) are used to implement concurrent and asynchronous networking.
