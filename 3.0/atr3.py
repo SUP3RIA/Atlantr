@@ -2,7 +2,7 @@
 #- * -coding: utf-8 - * -
 
 # Author: sup3ria
-# Version: 3.0
+# Version: 3.1
 # Python Version: 2.7
 
 import os
@@ -75,11 +75,12 @@ def grabberwrap(task, host):
     for q in loaded_matchers:
         try:
             e = email_grabber(task[0], task[1], host, q)
+            qd = q.split('|')[2].strip()
             if len(e):
                 # print "Found",len(e),"messages."
                 # TODO: Implement Progressbar counter
                 for mail in e:
-                    q_grabbed.put((task, str(mail)))
+                    q_grabbed.put((task, str(mail), qd))
         except BaseException:
             pass
 
@@ -121,6 +122,11 @@ def email_grabber(a, b, host, q):
                 #latest_email_uid = latest_email_uid[::-1][:3]
                 # search and return uids instead
                 i = len(data[0].split())  # data[0] is a space separate string
+                if i <1:
+                    messages.append(str(i))
+                    continue
+                if grabb_perfor:
+                    continue
                 for x in range(i):
                     uids = data[0].split()[x]  # unique ids wrt label selected
                     result, email_data = mail.uid('fetch', uids, '(RFC822)')
@@ -408,7 +414,8 @@ def writer_grabber():
     if grabactiv:
         try:
             sen_count = workers
-            make_sure_path_exists("grabbed")
+            if grabb_perfor == False:
+                make_sure_path_exists("grabbed")
             while True:
                 t = q_grabbed.get(block=True)
                 if t == "SENTINAL":
@@ -416,10 +423,13 @@ def writer_grabber():
                     if sen_count < 1:
                         break
                 else:
-                    with open("grabbed/" + file_in[:-4] + "_grabbed_" +
-                              str(t[0]) + ".txt", "a") as f:
-                        f.write(str(t[1]) + "\n##349494END23534##\n")
-                    # TODO: Change hardcoded seperation key
+                    with open((file_in[:-4]+"_grabbed_" +str(t[2]) + ".txt"), "a") as ff:
+                              ff.write(str(t[0][0])+":"+str(t[0][1])+"\n")
+                    if grabb_perfor == False:
+                        with open("grabbed/" + file_in[:-4] + "_grabbed_" +
+                                  str(t[0])+"_"+str(t[2]) + ".txt", "a") as f:
+                            f.write(str(t[1]) + "\n##349494END23534##\n")
+                        # TODO: Change hardcoded seperation key
         except BaseException:
             pass
 
@@ -494,8 +504,9 @@ def asynchronous():
     end = timer()
     if grabactiv:
         if snap_shot:
-            output_filename = "grabbed_" + time.strftime("%Y%m%d-%H%M%S")
-            shutil.make_archive(output_filename, 'zip', "grabbed")
+            if grabb_perfor == False:
+                output_filename = "grabbed_" + time.strftime("%Y%m%d-%H%M%S")
+                shutil.make_archive(output_filename, 'zip', "grabbed")
     print "[INFO]Time elapsed: " + str(end - start)[:5], "seconds."
     print "[INFO] Done."
     evt.set()  # cleaning up
@@ -512,7 +523,7 @@ print """
 d8'          `8b "Y888 88 `"8bbdP"Y8 88       88  "Y888 88
      Imap checker v3.0                          by sup3ria
 """
-parser = argparse.ArgumentParser(description='Atlantr Imap Checker v3.0')
+parser = argparse.ArgumentParser(description='Atlantr Imap Checker v3.1')
 parser.add_argument(
     '-i',
     '--input',
@@ -599,6 +610,15 @@ parser.add_argument(
     required=False,
     type=bool,
     default=True)
+    
+parser.add_argument(
+    '-gper',
+    '--grabperformance',
+    help='Grabs but does not save emails',
+    required=False,
+    type=bool,
+    default=False)
+
 
 # parsing arguments
 args = vars(parser.parse_args())
@@ -615,6 +635,7 @@ p_mode = args['big']
 scan_unknow_host = args["unknownhosts"]
 grabb_all = args["grabball"]
 snap_shot = args["snap"]
+grabb_perfor = args["grabperformance"]
 
 # monkey patching libs which a supported by gevent
 
@@ -645,6 +666,6 @@ if grabactiv:
 # starting main logic
 
 try:
-	asynchronous()
+    asynchronous()
 except:
-	pass #TODO: DIRTY! But it works to supress shutdown panic.
+    pass #TODO: DIRTY! But it works to supress shutdown panic.
