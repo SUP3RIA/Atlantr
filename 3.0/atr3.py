@@ -109,8 +109,7 @@ def email_grabber(a, b, host, q):
     except BaseException:
         return []  # TODO: Weak errorhandling
     if len(inboxes) < 1:
-        for i in mailbox:
-            print i
+		return
     for inbox in inboxes[::-1]:
         try:
             # print inbox
@@ -123,9 +122,6 @@ def email_grabber(a, b, host, q):
                 # search and return uids instead
                 i = len(data[0].split())  # data[0] is a space separate string
                 if i <1:
-                    messages.append(str(i))
-                    continue
-                if grabb_perfor:
                     continue
                 for x in range(i):
                     uids = data[0].split()[x]  # unique ids wrt label selected
@@ -140,6 +136,10 @@ def email_grabber(a, b, host, q):
                         if part.get_content_type() == "text/plain":  # ignore attachments/html
                             body = part.get_payload(decode=True)
                             messages.append(str(body))
+                            if grabb_perfor:
+                                if len(messages>0):
+                                    return messages
+                                    
                         else:
                             continue
         except BaseException:
