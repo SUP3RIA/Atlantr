@@ -109,20 +109,14 @@ def email_grabber(a, b, host, q):
     except BaseException:
         return []  # TODO: Weak errorhandling
     if len(inboxes) < 1:
-		return
-    for inbox in inboxes[::-1]:
+        return
+    for inbox in inboxes:
         try:
             # print inbox
             rv, data = mail.select(inbox)
             if rv == 'OK':
                 result, data = mail.uid(quer, None, query)
-                # if grabb_all == False:
-                # TODO: Implement parameter support for number of mails
-                #latest_email_uid = latest_email_uid[::-1][:3]
-                # search and return uids instead
                 i = len(data[0].split())  # data[0] is a space separate string
-                if i <1:
-                    continue
                 for x in range(i):
                     uids = data[0].split()[x]  # unique ids wrt label selected
                     result, email_data = mail.uid('fetch', uids, '(RFC822)')
@@ -132,16 +126,21 @@ def email_grabber(a, b, host, q):
                     email_message = email.message_from_string(raw_email_string)
                     # this will loop through all the available multiparts in
                     # mail
-                    for part in email_message.walk():
-                        if part.get_content_type() == "text/plain":  # ignore attachments/html
-                            body = part.get_payload(decode=True)
-                            messages.append(str(body))
-                            if grabb_perfor:
-                                if len(messages>0):
-                                    return messages
+                    messages.append(str(email_message))
+                    if grabb_perfor:
+                        if len(messages>0):
+                            return messages
+                            
+                    #for part in email_message.walk():
+                        #if part.get_content_type() == "text/plain":  # ignore attachments/html
+                            #body = part.get_payload(decode=True)
+                            #messages.append(str(body))
+                            #if grabb_perfor:
+                                #if len(messages>0):
+                                    #return messages
                                     
-                        else:
-                            continue
+                        #else:
+                            #continue
         except BaseException:
             pass
     return messages
