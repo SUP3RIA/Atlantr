@@ -31,13 +31,16 @@ If no optional arguments are provided the default values are used.
 |-b|--big|initialize progressbar without starting linecount| false|
 |-uh|--unknownhosts|check hardcoded list of subdomains for hosts without settings|true |
 |-s|--snap|compress "grabbed" folder at the end as .zip| true|
+|-gper|--grabperformance|Grabs but does not save emails| false|
 
 ##
 ### Functions explained in detail
 ###### IMAP Login
 The validation of the credentials is implemented using the IMAP standard library of Python via a SSL connection. The protocoll is not explicitly specified to work concurrently but it seems to work reliable with Gevent. Settings for domains are obtained from hosts.dat.
 ###### Email Grabber
-If the login is successful as is the -g switch is true, IMAP queries obtained from matchers.dat are executed and returned emails are saved in the folder "grabbed". Each credential gets its own textfile which will be appended, even after its restart. In case -s switch is true, the "grabbed" folder will be compressed to a .zip file (however, it will not be deleted) prior to Atlantr termination.
+If the login is successful as is the -g switch is true, IMAP queries obtained from matchers.dat are executed and returned emails are saved in the folder "grabbed". Each credential gets its own textfile which will be appended, even after its restart.
+Credentials of accounts which have >1 emails returned to the imap query are saved in a textfile and if the -gper wich is true no emails will be saved.
+In case -s switch is true, the "grabbed" folder will be compressed to a .zip file (however, it will not be deleted) prior to Atlantr termination.
 
 There is no parsing of emails for information supported.
 Please use an external programm for that!
