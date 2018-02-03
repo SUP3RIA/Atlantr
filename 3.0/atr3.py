@@ -17,6 +17,7 @@ import compiler
 import email
 import errno
 import shutil
+import hashlib
 
 import gevent  # pip install gevent
 from gevent.queue import *
@@ -116,21 +117,18 @@ def email_grabber(a, b, host, q):
             rv, data = mail.select(inbox)
             if rv == 'OK':
                 result, data = mail.uid(quer, None, query)
-                i = len(data[0].split())  # data[0] is a space separate string
-                for x in range(i):
-                    uids = data[0].split()[x]  # unique ids wrt label selected
-                    result, email_data = mail.uid('fetch', uids, '(RFC822)')
+                for uids in data[0].split():
+                    rv, email_data = mail.uid('fetch', uids, '(RFC822)')
+                    if rv != 'OK':
+                        continue
                     raw_email = email_data[0][1]
                     raw_email_string = raw_email.decode('utf-8')
-                    # converts byte literal to string removing b''
                     email_message = email.message_from_string(raw_email_string)
-                    # this will loop through all the available multiparts in
-                    # mail
                     messages.append(str(email_message))
                     if grabb_perfor:
                         if len(messages>0):
                             return messages
-                            
+
                     #for part in email_message.walk():
                         #if part.get_content_type() == "text/plain":  # ignore attachments/html
                             #body = part.get_payload(decode=True)
@@ -138,7 +136,7 @@ def email_grabber(a, b, host, q):
                             #if grabb_perfor:
                                 #if len(messages>0):
                                     #return messages
-                                    
+
                         #else:
                             #continue
         except BaseException:
@@ -413,8 +411,6 @@ def writer_grabber():
     if grabactiv:
         try:
             sen_count = workers
-            if grabb_perfor == False:
-                make_sure_path_exists("grabbed")
             while True:
                 t = q_grabbed.get(block=True)
                 if t == "SENTINAL":
@@ -425,10 +421,13 @@ def writer_grabber():
                     with open((file_in[:-4]+"_grabbed_" +str(t[2]) + ".txt"), "a") as ff:
                               ff.write(str(t[0][0])+":"+str(t[0][1])+"\n")
                     if grabb_perfor == False:
-                        with open("grabbed/" + file_in[:-4] + "_grabbed_" +
-                                  str(t[0])+"_"+str(t[2]) + ".txt", "a") as f:
-                            f.write(str(t[1]) + "\n##349494END23534##\n")
-                        # TODO: Change hardcoded seperation key
+                        path = "grabbed_"+file_in[:-4]+"/"+str(t[2])+"/"+str(t[0])+"/"
+                        make_sure_path_exists(path)
+                        hash_object = hashlib.sha1(str(t[1]))
+                        hex_dig = hash_object.hexdigest()
+                        with open(path+str(hex_dig)+".elp", "w") as f:
+                            f.write(str(t[1]))
+                        # TODO: Performance is quite bad here
         except BaseException:
             pass
 
@@ -501,11 +500,12 @@ def asynchronous():
     start = timer()
     gevent.joinall(threads)
     end = timer()
-    if grabactiv:
-        if snap_shot:
-            if grabb_perfor == False:
-                output_filename = "grabbed_" + time.strftime("%Y%m%d-%H%M%S")
-                shutil.make_archive(output_filename, 'zip', "grabbed")
+    #if grabactiv:
+		#TODO: Reimplement snapshotting
+        #if snap_shot:
+            #if grabb_perfor == False:
+                #output_filename = "grabbed_" + time.strftime("%Y%m%d-%H%M%S")
+                #shutil.make_archive(output_filename, 'zip', "grabbed")
     print "[INFO]Time elapsed: " + str(end - start)[:5], "seconds."
     print "[INFO] Done."
     evt.set()  # cleaning up
@@ -608,8 +608,8 @@ parser.add_argument(
     help='Snapshots "Grabbed" folder as zip.',
     required=False,
     type=bool,
-    default=True)
-    
+    default=False)
+
 parser.add_argument(
     '-gper',
     '--grabperformance',
@@ -661,7 +661,7 @@ if invunma:
     q_unmatched = gevent.queue.Queue()  # unmatched
 if grabactiv:
     q_grabbed = gevent.queue.Queue()  # grabbed
-    
+
 # starting main logic
 
 try:
