@@ -106,6 +106,7 @@ matchers.dat:
 ```
 search|(FROM "domain.com")|discriptor
 ```
+Discriptor is just an internal label.
 Paratmeters are seperated with |.
 See more how to use it here: 
 http://php.net/manual/en/function.imap-search.php
