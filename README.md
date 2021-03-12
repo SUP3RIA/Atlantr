@@ -10,7 +10,7 @@ Green threads (Gevent) are used to implement concurrent and asynchronous network
 - Gevent (pip install gevent)
 - tqdm (pip install tqdm)
 - 512MB RAM
-- Linux preferred
+- Linux preferred (faster)
 #### Example usage:
 ```
 python atr3.py -i input.txt -o output.txt -t 1000 -g true 
@@ -92,9 +92,21 @@ Note that Proxychains can be configured to work with Socks5 and other types of p
 ##
 
 #### Formats and conventions
-Mail:Pass:
+Input texfile example:
+```
 user@domain.com:password
+user2@domain.com:password
+user3@domain.com:password
+```
 hoster.dat:
+```
 domain.com:imap.domain.com:port
+```
 matchers.dat:
+```
 search|(FROM "domain.com")|discriptor
+```
+Discriptor is just an internal label.
+Paratmeters are seperated with |.
+See more how to use it here: 
+http://php.net/manual/en/function.imap-search.php
